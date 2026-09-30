@@ -41,6 +41,7 @@ export function CartProvider({ children }) {
                     name: product.name,
                     price: product.price,
                     minPurchase: product.min_purchase,
+                    image: product.images?.[0]?.path ?? null,
                     color,
                     quantity,
                 },

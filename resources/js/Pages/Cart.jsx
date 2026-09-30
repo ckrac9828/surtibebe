@@ -16,7 +16,7 @@ export default function Cart() {
                     <p className="mt-2 text-gray-600">Agrega productos desde el catálogo para armar tu pedido.</p>
                     <Link
                         href="/catalogo"
-                        className="mt-6 inline-block rounded-full bg-brand-orange px-6 py-3 font-semibold text-white hover:opacity-90"
+                        className="mt-6 inline-block rounded-full bg-brand-skyDeep px-6 py-3 font-semibold text-white hover:opacity-90"
                     >
                         Ir al catálogo
                     </Link>
@@ -55,12 +55,27 @@ export default function Cart() {
                             {items.map((item) => (
                                 <tr key={`${item.id}-${item.color ?? 'nc'}`} className="border-b border-gray-100">
                                     <td className="py-4 font-medium text-brand-navy">
-                                        {item.name}
-                                        {item.color && (
-                                            <span className="block text-xs font-normal text-gray-500">
-                                                Color: {item.color}
-                                            </span>
-                                        )}
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-14 w-14 flex-none items-center justify-center overflow-hidden rounded-lg bg-brand-soft text-2xl">
+                                                {item.image ? (
+                                                    <img
+                                                        src={`/storage/${item.image}`}
+                                                        alt={item.name}
+                                                        className="h-full w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    '🧸'
+                                                )}
+                                            </div>
+                                            <div>
+                                                {item.name}
+                                                {item.color && (
+                                                    <span className="block text-xs font-normal text-gray-500">
+                                                        Color: {item.color}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </td>
                                     <td className="py-4 text-gray-600">{formatPrice(item.price)}</td>
                                     <td className="py-4">
@@ -113,7 +128,7 @@ export default function Cart() {
                         </p>
                         <Link
                             href="/checkout"
-                            className="rounded-full bg-brand-orange px-8 py-3 text-center font-semibold text-white hover:opacity-90"
+                            className="rounded-full bg-brand-skyDeep px-8 py-3 text-center font-semibold text-white hover:opacity-90"
                         >
                             Continuar con el pedido
                         </Link>
