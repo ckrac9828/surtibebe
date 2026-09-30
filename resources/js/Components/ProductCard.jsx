@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useCart } from '../Context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
 import ColorPicker from './ColorPicker';
@@ -10,6 +10,8 @@ export default function ProductCard({ product }) {
     const image = product.images?.[0]?.path;
     const colors = product.colors ?? [];
     const [selectedColor, setSelectedColor] = useState(null);
+    const [justAdded, setJustAdded] = useState(false);
+    const addedTimeout = useRef(null);
     const selectedColorObj = colors.find((c) => c.name === selectedColor);
 
     // Si el producto no maneja colores, se puede agregar directo. Si sí
@@ -22,6 +24,12 @@ export default function ProductCard({ product }) {
     function handleAdd() {
         if (!canAdd) return;
         addItem(product, product.min_purchase, selectedColor);
+        // Feedback visual temporal: el botón pasa a verde con un check
+        // por 1.5s — sin esto el cliente no notaba que el producto se
+        // había añadido y pensaba que el botón no hacía nada.
+        setJustAdded(true);
+        clearTimeout(addedTimeout.current);
+        addedTimeout.current = setTimeout(() => setJustAdded(false), 1500);
     }
 
     return (
@@ -59,19 +67,34 @@ export default function ProductCard({ product }) {
                         size="sm"
                     />
                 )}
-                <div className="flex gap-2">
+                {/* Apilados (cada uno a todo el ancho) en tarjetas angostas —
+                    dos botones lado a lado en una tarjeta de 2 columnas en
+                    móvil quedaban tan apretados que el texto se envolvía y
+                    el rounded-full los deformaba en círculos. Lado a lado
+                    solo desde lg: (1024px), donde ya hay ancho de sobra. */}
+                <div className="flex flex-col gap-2 lg:flex-row">
                     <Link
                         href={`/productos/${product.slug}`}
-                        className="flex min-h-[44px] flex-1 items-center justify-center rounded-full border-2 border-brand-blue px-2 text-center text-sm font-semibold text-brand-blue hover:bg-brand-soft"
+                        className="flex min-h-[44px] items-center justify-center rounded-full border-2 border-brand-blue px-2 text-center text-sm font-semibold text-brand-blue hover:bg-brand-soft lg:flex-1"
                     >
                         Ver detalle
                     </Link>
                     <button
                         onClick={handleAdd}
                         disabled={!canAdd}
-                        className="flex min-h-[44px] flex-[1.4] items-center justify-center rounded-full bg-brand-orange px-2 text-center text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                        className={`flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-2 text-center text-sm font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 lg:flex-[1.4] ${
+                            justAdded
+                                ? 'scale-105 bg-brand-green'
+                                : 'bg-brand-skyDeep hover:opacity-90'
+                        }`}
                     >
-                        Agregar al carrito
+                        {justAdded ? (
+                            <>
+                                <span>✓</span> ¡Agregado!
+                            </>
+                        ) : (
+                            'Agregar al carrito'
+                        )}
                     </button>
                 </div>
             </div>

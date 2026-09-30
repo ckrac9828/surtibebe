@@ -41,14 +41,18 @@ export default function Index({ categories, products, newProducts, selectedCateg
                 <p className="mt-1 text-gray-600">Encuentra todo lo que necesitas para tu negocio.</p>
 
                 {newProducts && newProducts.length > 0 && (
-                    <section className="mt-8 rounded-2xl bg-brand-soft p-5 sm:p-6">
+                    <section className="mt-8 rounded-2xl bg-brand-soft p-4 sm:p-6">
                         <h2 className="text-lg font-bold text-brand-navy">✨ Nuevos productos</h2>
                         <p className="mt-1 text-sm text-gray-600">
                             Recién llegados — disponibles por tiempo limitado en esta sección.
                         </p>
+                        {/* En móvil cada tarjeta ocupa la mayor parte del ancho visible
+                            (una a la vista + un poco de la siguiente asomando, como un
+                            carrusel para deslizar); en pantallas más grandes vuelve al
+                            ancho compacto de siempre, porque ahí ya se ven varias a la vez. */}
                         <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
                             {newProducts.map((product) => (
-                                <div key={product.id} className="w-56 flex-none">
+                                <div key={product.id} className="w-[78%] flex-none sm:w-56">
                                     <ProductCard product={product} />
                                 </div>
                             ))}
@@ -105,7 +109,7 @@ export default function Index({ categories, products, newProducts, selectedCateg
                                     placeholder="Buscar productos..."
                                     className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-brand-blue focus:outline-none"
                                 />
-                                <button type="submit" className="min-h-[44px] flex-none rounded-lg bg-brand-navy px-4 text-white">
+                                <button type="submit" className="min-h-[44px] flex-none rounded-lg bg-brand-skyDeep px-4 text-white">
                                     🔍
                                 </button>
                             </form>
@@ -129,7 +133,7 @@ export default function Index({ categories, products, newProducts, selectedCateg
                             </p>
                         ) : (
                             <>
-                                <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
                                     {products.data.map((product) => (
                                         <ProductCard key={product.id} product={product} />
                                     ))}

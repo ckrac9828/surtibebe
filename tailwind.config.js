@@ -35,6 +35,15 @@ export default {
                 pink: '#FC3B8F',
             },
         },
+        keyframes: {
+            'cart-pop': {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.35)' },
+            },
+        },
+        animation: {
+            'cart-pop': 'cart-pop 0.4s ease-in-out',
+        },
     },
 },
    

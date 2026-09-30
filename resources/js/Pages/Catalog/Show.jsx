@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PublicLayout, { WHATSAPP_NUMBER } from '../../Layouts/PublicLayout';
 import ColorPicker from '../../Components/ColorPicker';
 import CategoryBadge from '../../Components/CategoryBadge';
@@ -11,6 +11,8 @@ export default function Show({ product }) {
     const [quantity, setQuantity] = useState(product.min_purchase);
     const [activeImage, setActiveImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(null);
+    const [justAdded, setJustAdded] = useState(false);
+    const addedTimeout = useRef(null);
 
     const images = product.images ?? [];
     const hasImages = images.length > 0;
@@ -43,6 +45,9 @@ export default function Show({ product }) {
     function handleAdd() {
         if (!canAdd) return;
         addItem(product, quantity, selectedColor);
+        setJustAdded(true);
+        clearTimeout(addedTimeout.current);
+        addedTimeout.current = setTimeout(() => setJustAdded(false), 1500);
     }
 
     return (
@@ -152,9 +157,13 @@ export default function Show({ product }) {
                             <button
                                 onClick={handleAdd}
                                 disabled={!canAdd}
-                                className="min-h-[44px] flex-1 rounded-full bg-brand-orange py-3 font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                                className={`min-h-[44px] flex-1 rounded-full py-3 font-semibold text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
+                                    justAdded
+                                        ? 'scale-[1.02] bg-brand-green'
+                                        : 'bg-brand-skyDeep hover:opacity-90'
+                                }`}
                             >
-                                🛒 Agregar al carrito
+                                {justAdded ? '✓ ¡Agregado al carrito!' : '🛒 Agregar al carrito'}
                             </button>
                         </div>
 

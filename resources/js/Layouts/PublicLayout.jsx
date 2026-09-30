@@ -1,5 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCart } from '../Context/CartContext';
 import logo from '../../images/logo.png';
 
@@ -9,6 +9,21 @@ export default function PublicLayout({ children }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [search, setSearch] = useState('');
     const { totalItems } = useCart();
+    const [cartBump, setCartBump] = useState(false);
+    const prevTotal = useRef(totalItems);
+
+    // El ícono del carrito "rebota" cuando el total sube, como refuerzo
+    // visual adicional de que el producto sí se añadió (además del cambio
+    // de estado en el propio botón "Agregar al carrito").
+    useEffect(() => {
+        if (totalItems > prevTotal.current) {
+            setCartBump(true);
+            const t = setTimeout(() => setCartBump(false), 400);
+            prevTotal.current = totalItems;
+            return () => clearTimeout(t);
+        }
+        prevTotal.current = totalItems;
+    }, [totalItems]);
 
     const navLinks = [
         { href: '/', label: 'Inicio' },
@@ -73,9 +88,13 @@ export default function PublicLayout({ children }) {
 
                     <div className="hidden flex-none items-center gap-4 md:flex">
                         <Link href="/carrito" className="relative">
-                            <span className="text-2xl">🛒</span>
+                            <span className={`inline-block text-2xl ${cartBump ? 'animate-cart-pop' : ''}`}>🛒</span>
                             {totalItems > 0 && (
-                                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-red text-xs font-bold text-white">
+                                <span
+                                    className={`absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-red text-xs font-bold text-white ${
+                                        cartBump ? 'animate-cart-pop' : ''
+                                    }`}
+                                >
                                     {totalItems}
                                 </span>
                             )}
