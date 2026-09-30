@@ -81,7 +81,7 @@ export default function Contact() {
                         </p>
                         <a
                             href={`mailto:${ADMIN_EMAIL}`}
-                            className="mt-6 w-full rounded-full bg-brand-navy py-3 font-semibold text-white hover:opacity-90"
+                            className="mt-6 w-full rounded-full bg-brand-skyDeep py-3 font-semibold text-white hover:opacity-90"
                         >
                             Enviar mensaje
                         </a>

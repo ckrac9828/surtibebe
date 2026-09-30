@@ -16,7 +16,7 @@ export default function OrderConfirmed({ order }) {
                 </p>
                 <Link
                     href="/catalogo"
-                    className="mt-8 inline-block rounded-full bg-brand-orange px-6 py-3 font-semibold text-white hover:opacity-90"
+                    className="mt-8 inline-block rounded-full bg-brand-skyDeep px-6 py-3 font-semibold text-white hover:opacity-90"
                 >
                     Seguir comprando
                 </Link>

@@ -42,7 +42,7 @@ export default function Checkout() {
                     </h1>
                     <Link
                         href="/catalogo"
-                        className="mt-6 inline-block rounded-full bg-brand-orange px-6 py-3 font-semibold text-white hover:opacity-90"
+                        className="mt-6 inline-block rounded-full bg-brand-skyDeep px-6 py-3 font-semibold text-white hover:opacity-90"
                     >
                         Ir al catálogo
                     </Link>
@@ -143,7 +143,7 @@ export default function Checkout() {
                         <button
                             type="submit"
                             disabled={processing}
-                            className="mt-6 w-full rounded-full bg-brand-orange py-3 font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                            className="mt-6 w-full rounded-full bg-brand-pink py-3 font-semibold text-white hover:opacity-90 disabled:opacity-50"
                         >
                             {processing ? 'Enviando...' : 'Confirmar pedido'}
                         </button>

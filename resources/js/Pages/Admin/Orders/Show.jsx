@@ -340,7 +340,7 @@ export default function Show({ order, products }) {
                                 <button
                                     type="submit"
                                     disabled={!addProductId}
-                                    className="rounded-full bg-brand-orange px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+                                    className="rounded-full bg-brand-skyDeep px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
                                 >
                                     + Agregar
                                 </button>
@@ -400,7 +400,7 @@ export default function Show({ order, products }) {
 
                         <button
                             onClick={() => setStockShortages(null)}
-                            className="mt-5 w-full rounded-full bg-brand-navy py-2.5 font-semibold text-white hover:opacity-90"
+                            className="mt-5 w-full rounded-full bg-brand-skyDeep py-2.5 font-semibold text-white hover:opacity-90"
                         >
                             Entendido
                         </button>
