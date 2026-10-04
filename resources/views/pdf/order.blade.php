@@ -10,9 +10,9 @@
         table { width: 100%; border-collapse: collapse; }
 
         .header-table td { vertical-align: top; }
-        /* El logo real es 1536×1024 (proporción 3:2) — se respeta esa
+        /* El logo real es 1798×875 (proporción ~2.06:1) — se respeta esa
            proporción para que no se vea aplastado/angosto. */
-        .logo { width: 110px; height: 73px; }
+        .logo { width: 110px; height: 54px; }
         .brand-name { font-size: 20px; font-weight: bold; color: #16324F; margin: 0; }
         .brand-tagline { font-size: 11px; color: #55636F; margin: 2px 0 0; }
         .order-title { font-size: 16px; font-weight: bold; color: #16324F; margin: 0; text-align: right; }
