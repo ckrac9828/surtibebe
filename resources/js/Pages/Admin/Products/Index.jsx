@@ -1,10 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AdminLayout from '../../../Layouts/AdminLayout';
+import { PencilIcon, TrashIcon } from '../../../Components/AdminIcons';
+import ConfirmDeleteModal from '../../../Components/ConfirmDeleteModal';
 import { formatPrice } from '../../../utils/formatPrice';
 
 export default function Index({ products, categories, filters }) {
     const [search, setSearch] = useState(filters.buscar ?? '');
+    const [productToDelete, setProductToDelete] = useState(null);
+    const [deletingProduct, setDeletingProduct] = useState(false);
 
     function applyFilters(overrides = {}) {
         router.get(
@@ -28,11 +32,17 @@ export default function Index({ products, categories, filters }) {
         router.patch(`/admin/productos/${product.id}/estado`, {}, { preserveScroll: true });
     }
 
-    function destroyProduct(product) {
-        if (!confirm(`¿Eliminar "${product.name}" definitivamente? Esta acción no se puede deshacer.`)) {
-            return;
-        }
-        router.delete(`/admin/productos/${product.id}`, { preserveScroll: true });
+    function confirmDestroyProduct() {
+        if (!productToDelete) return;
+
+        setDeletingProduct(true);
+        router.delete(`/admin/productos/${productToDelete.id}`, {
+            preserveScroll: true,
+            onFinish: () => {
+                setDeletingProduct(false);
+                setProductToDelete(null);
+            },
+        });
     }
 
     return (
@@ -139,16 +149,17 @@ export default function Index({ products, categories, filters }) {
                                         <div className="flex justify-end gap-3">
                                             <Link
                                                 href={`/admin/productos/${product.id}/edit`}
-                                                className="text-brand-blue hover:underline"
+                                                className="text-brand-blue hover:opacity-70"
+                                                title="Editar producto"
                                             >
-                                                ✏️
+                                                <PencilIcon className="h-5 w-5" />
                                             </Link>
                                             <button
-                                                onClick={() => destroyProduct(product)}
+                                                onClick={() => setProductToDelete(product)}
                                                 className="text-brand-red hover:opacity-70"
                                                 title="Eliminar definitivamente"
                                             >
-                                                🗑️
+                                                <TrashIcon className="h-5 w-5" />
                                             </button>
                                         </div>
                                     </td>
@@ -178,6 +189,20 @@ export default function Index({ products, categories, filters }) {
                     ))}
                 </div>
             )}
+
+            <ConfirmDeleteModal
+                show={!!productToDelete}
+                title="¿Eliminar este producto?"
+                description={
+                    productToDelete
+                        ? `Vas a eliminar "${productToDelete.name}" definitivamente. Esta acción no se puede deshacer.`
+                        : ''
+                }
+                confirmLabel="Eliminar"
+                processing={deletingProduct}
+                onCancel={() => setProductToDelete(null)}
+                onConfirm={confirmDestroyProduct}
+            />
         </AdminLayout>
     );
 }

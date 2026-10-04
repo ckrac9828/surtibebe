@@ -2,6 +2,8 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import OrderStatusBadge from '../../../Components/OrderStatusBadge';
+import { PencilIcon, TrashIcon } from '../../../Components/AdminIcons';
+import ConfirmDeleteModal from '../../../Components/ConfirmDeleteModal';
 import { formatPrice } from '../../../utils/formatPrice';
 import { formatDate } from '../../../utils/formatDate';
 
@@ -23,6 +25,9 @@ export default function Show({ order, products }) {
 
     const [stockShortages, setStockShortages] = useState(null);
     const [pendingStatusLabel, setPendingStatusLabel] = useState('');
+
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [deletingItem, setDeletingItem] = useState(false);
 
     const [editingItemId, setEditingItemId] = useState(null);
     const [editColor, setEditColor] = useState('');
@@ -79,9 +84,17 @@ export default function Show({ order, products }) {
         );
     }
 
-    function deleteItem(item) {
-        if (!confirm(`¿Quitar "${item.product_name}" del pedido?`)) return;
-        router.delete(`/admin/pedidos/${order.id}/items/${item.id}`, { preserveScroll: true });
+    function confirmDeleteItem() {
+        if (!itemToDelete) return;
+
+        setDeletingItem(true);
+        router.delete(`/admin/pedidos/${order.id}/items/${itemToDelete.id}`, {
+            preserveScroll: true,
+            onFinish: () => {
+                setDeletingItem(false);
+                setItemToDelete(null);
+            },
+        });
     }
 
     function submitAdd(e) {
@@ -262,18 +275,18 @@ export default function Show({ order, products }) {
                                                         {item.product && (
                                                             <button
                                                                 onClick={() => startEdit(item)}
-                                                                className="text-brand-blue hover:underline"
+                                                                className="text-brand-blue hover:opacity-70"
                                                                 title="Editar color/cantidad"
                                                             >
-                                                                ✏️
+                                                                <PencilIcon className="h-5 w-5" />
                                                             </button>
                                                         )}
                                                         <button
-                                                            onClick={() => deleteItem(item)}
+                                                            onClick={() => setItemToDelete(item)}
                                                             className="text-brand-red hover:opacity-70"
                                                             title="Quitar del pedido"
                                                         >
-                                                            🗑️
+                                                            <TrashIcon className="h-5 w-5" />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -407,6 +420,20 @@ export default function Show({ order, products }) {
                     </div>
                 </div>
             )}
+
+            <ConfirmDeleteModal
+                show={!!itemToDelete}
+                title="¿Quitar este producto del pedido?"
+                description={
+                    itemToDelete
+                        ? `Vas a quitar "${itemToDelete.product_name}" del pedido. Esta acción no se puede deshacer.`
+                        : ''
+                }
+                confirmLabel="Quitar"
+                processing={deletingItem}
+                onCancel={() => setItemToDelete(null)}
+                onConfirm={confirmDeleteItem}
+            />
         </AdminLayout>
     );
 }
