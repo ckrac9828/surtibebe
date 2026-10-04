@@ -23,6 +23,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // esos controladores — solo cambia a dónde apunta la URL.
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/cuenta', fn () => Inertia::render('Admin/Account'))->name('cuenta');
+
     Route::resource('productos', Admin\ProductController::class)->except(['show']);
     Route::patch('/productos/{producto}/estado', [Admin\ProductController::class, 'toggleStatus'])->name('productos.toggle-status');
     Route::delete('/productos/{producto}/imagenes/{imagen}', [Admin\ProductController::class, 'destroyImage'])->name('productos.images.destroy');

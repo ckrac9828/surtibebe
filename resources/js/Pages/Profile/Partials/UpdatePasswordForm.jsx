@@ -1,14 +1,16 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
+import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 export default function UpdatePasswordForm({ className = '' }) {
     const passwordInput = useRef();
     const currentPasswordInput = useRef();
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const {
         data,
@@ -29,7 +31,10 @@ export default function UpdatePasswordForm({ className = '' }) {
 
         put(route('password.update'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+                setShowConfirmation(true);
+            },
             onError: (errors) => {
                 if (errors.password) {
                     reset('password', 'password_confirmation');
@@ -137,6 +142,27 @@ export default function UpdatePasswordForm({ className = '' }) {
                     </Transition>
                 </div>
             </form>
+
+            <Modal show={showConfirmation} onClose={() => setShowConfirmation(false)} maxWidth="sm">
+                <div className="p-6 text-center">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-green/10 text-3xl text-brand-green">
+                        ✓
+                    </div>
+                    <h2 className="mt-4 text-lg font-bold text-brand-navy">
+                        Contraseña actualizada
+                    </h2>
+                    <p className="mt-2 text-sm text-gray-600">
+                        Tu contraseña se cambió correctamente. Te enviamos un correo
+                        de confirmación a tu cuenta.
+                    </p>
+                    <PrimaryButton
+                        onClick={() => setShowConfirmation(false)}
+                        className="mt-6 w-full justify-center"
+                    >
+                        Entendido
+                    </PrimaryButton>
+                </div>
+            </Modal>
         </section>
     );
 }
