@@ -1,5 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import AdminLayout from '../../../Layouts/AdminLayout';
+import { CloseIcon, TrashIcon } from '../../../Components/AdminIcons';
 
 export default function Form({ categories, product }) {
     const isEditing = !!product;
@@ -147,9 +148,9 @@ export default function Form({ categories, product }) {
                                     <button
                                         type="button"
                                         onClick={() => removeExistingImage(image)}
-                                        className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center bg-black/60 text-xs text-white"
+                                        className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center bg-black/60 text-white"
                                     >
-                                        ✕
+                                        <CloseIcon className="h-3 w-3" />
                                     </button>
                                 </div>
                             ))}
@@ -215,7 +216,7 @@ export default function Form({ categories, product }) {
                                     onClick={() => removeColor(index)}
                                     className="text-brand-red hover:opacity-70"
                                 >
-                                    🗑️
+                                    <TrashIcon className="h-5 w-5" />
                                 </button>
                             </div>
                         ))}
