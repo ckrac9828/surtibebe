@@ -24,13 +24,28 @@ class OrderController extends Controller
         $orders = Order::query()
             ->when($request->query('estado'), fn ($q, $status) => $q->where('status', $status))
             ->when($request->query('fecha'), fn ($q, $date) => $q->whereDate('created_at', $date))
+            // Busca por nombre de la empresa/cliente, por número de pedido
+            // (#00123 o solo 123) o por el id interno, para que el admin
+            // pueda encontrar un pedido sin importar cuál de los tres tenga
+            // a mano.
+            ->when($request->query('buscar'), function ($q, $search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('company_name', 'like', "%{$search}%")
+                        ->orWhere('order_number', 'like', "%{$search}%");
+
+                    $numeric = ltrim($search, '#');
+                    if (is_numeric($numeric)) {
+                        $q2->orWhere('id', (int) $numeric);
+                    }
+                });
+            })
             ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('Admin/Orders/Index', [
             'orders' => $orders,
-            'filters' => $request->only(['estado', 'fecha']),
+            'filters' => $request->only(['estado', 'fecha', 'buscar']),
         ]);
     }
 

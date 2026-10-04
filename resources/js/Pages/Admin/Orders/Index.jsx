@@ -1,20 +1,30 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import OrderStatusBadge from '../../../Components/OrderStatusBadge';
+import { SearchIcon } from '../../../Components/AdminIcons';
 import { formatPrice } from '../../../utils/formatPrice';
 import { formatDate } from '../../../utils/formatDate';
 
 export default function Index({ orders, filters }) {
+    const [search, setSearch] = useState(filters.buscar ?? '');
+
     function applyFilters(overrides = {}) {
         router.get(
             '/admin/pedidos',
             {
                 estado: filters.estado || undefined,
                 fecha: filters.fecha || undefined,
+                buscar: filters.buscar || undefined,
                 ...overrides,
             },
             { preserveState: true, replace: true }
         );
+    }
+
+    function handleSearch(e) {
+        e.preventDefault();
+        applyFilters({ buscar: search.trim() || undefined });
     }
 
     return (
@@ -24,6 +34,27 @@ export default function Index({ orders, filters }) {
             <h1 className="text-2xl font-bold text-brand-navy">Pedidos</h1>
 
             <div className="mt-6 flex flex-wrap gap-3">
+                <form onSubmit={handleSearch} className="flex w-full gap-2 sm:w-auto">
+                    <div className="relative flex-1 sm:w-64">
+                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <SearchIcon className="h-4 w-4" />
+                        </span>
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Buscar por cliente o # de pedido..."
+                            className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-brand-blue focus:outline-none"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="rounded-lg bg-brand-skyDeep px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+                    >
+                        Buscar
+                    </button>
+                </form>
+
                 <select
                     value={filters.estado ?? ''}
                     onChange={(e) => applyFilters({ estado: e.target.value || undefined })}
@@ -44,9 +75,12 @@ export default function Index({ orders, filters }) {
                     className="rounded-lg border border-gray-300 px-3 py-2"
                 />
 
-                {(filters.estado || filters.fecha) && (
+                {(filters.estado || filters.fecha || filters.buscar) && (
                     <button
-                        onClick={() => applyFilters({ estado: undefined, fecha: undefined })}
+                        onClick={() => {
+                            setSearch('');
+                            applyFilters({ estado: undefined, fecha: undefined, buscar: undefined });
+                        }}
                         className="rounded-lg px-3 py-2 text-sm text-gray-500 hover:text-brand-navy"
                     >
                         Limpiar filtros
